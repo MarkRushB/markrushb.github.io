@@ -42,10 +42,10 @@ comment:
   type: valine # valine | utterances
 
   # valine 需要的参数
-  appId: your-app-id
-  appKey: your-app-key
+  appId: Bj0NntjI3QHq0dn1JjVLqJwT-MdYXbMMI
+  appKey: 6YuWoEhzm0VqYEWNesJADbGT
   placeholder: say something
-  notify: false
+  notify: true
   verify: false
   avatar: mp
 
