@@ -3,11 +3,11 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
-subtitle: ''
-description: ''
+title: 废话练习
+subtitle: '废话是需要练习的，不然就会充满意义。'
+description: '废话是需要练习的，不然就会充满意义。'
 keywords:
-author: John Doe
+author: Mark Zhao
 language: en
 timezone: ''
 
@@ -43,13 +43,19 @@ render_drafts: false
 post_asset_folder: false
 relative_link: false
 future: true
+# highlight:
+#   enable: true
+#   line_number: true
+#   auto_detect: false
+#   tab_replace: ''
+#   wrap: true
+#   hljs: false
 highlight:
+  hljs: true
   enable: true
-  line_number: true
-  auto_detect: false
+  line_number: false
+  auto_detect: true
   tab_replace: ''
-  wrap: true
-  hljs: false
 prismjs:
   enable: false
   preprocess: true
