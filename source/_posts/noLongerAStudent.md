@@ -2,7 +2,7 @@
 title: noLongerAStudent
 date: 2024-06-01 16:38:05
 layout: tweet
-icon: planet
+icon: sad
 ---
 自从抽到H1B之后，一直拖着没给学校报告，在马上去加拿大面签之际，我终于给学校提交了状态变化的申请，于是收到了下面的回复：
 
