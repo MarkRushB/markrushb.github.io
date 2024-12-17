@@ -1,12 +1,12 @@
 
-# # Site
-# title: Hexo
-# subtitle: ''
-# description: ''
-# keywords:
-# author: John Doe
-# language: en
-# timezone: ''
+# Site
+title: Bullshit Practice
+subtitle: ''
+description: ''
+keywords:
+author: Mark
+language: en
+timezone: ''
 
 # # URL
 # ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
@@ -110,3 +110,4 @@ aomori_widgets:
   - tag # 文章标签
   - recent_posts  # 最新文章
   - archive #文章归档
+aomori_favicon: 🎮
