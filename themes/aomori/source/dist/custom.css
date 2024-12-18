@@ -637,7 +637,8 @@ img:not([src]):not([srcset]) {
     position: relative;
     display: -webkit-box;
     display: -ms-flexbox;
-    display: flex
+    display: flex;
+    flex-direction: column;
 }
 
 .index .article .article-inner video {
@@ -648,7 +649,7 @@ img:not([src]):not([srcset]) {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 260px;
     flex: 0 0 260px;
-    margin-right: 20px;
+    margin-bottom: 30px;
     position: relative
 }
 
