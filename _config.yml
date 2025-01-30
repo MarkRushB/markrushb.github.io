@@ -111,3 +111,7 @@ aomori_widgets:
   - recent_posts  # 最新文章
   - archive #文章归档
 aomori_favicon: 🎮
+aomori_valine:
+  enable: true
+  appId: 'fQ1AcOGaUtzpJLZYYWbwQcmJ-MdYXbMMI'
+  appKey: 'Cv6zc0pA9ZoeYhezVF2OkMPd'
