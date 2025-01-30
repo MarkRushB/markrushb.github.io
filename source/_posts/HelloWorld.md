@@ -4,6 +4,7 @@ date: 2025-01-21 04:30:31
 tags: 
 ---
 <iframe allow="autoplay *; encrypted-media *;" frameborder="0" height="150" style="width:100%;overflow:hidden;background:transparent;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/album/imagine/1440853752?i=1440853776"></iframe>
+<!-- more -->
 
 如果世界是由开源代码运行的，我想给此刻的生活加上默认播放的背景音乐，约翰列侬的Imagine。
 	
