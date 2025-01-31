@@ -598,7 +598,7 @@ img:not([src]):not([srcset]) {
                 .article-title {
                     font-size: 1.2rem;
                     font-weight: 500;
-                    padding: 0 0 12px;
+                    padding: 0 0 30px;
 
                     a {
                         color: var(--color-type);
@@ -619,7 +619,7 @@ img:not([src]):not([srcset]) {
         .article-footer {
             display: flex;
             justify-content: flex-end;
-            padding: 20px 0 0;
+            // padding: 20px 0 0;
             // font-family: 'Oswald', sans-serif;
             
             .article-more-info {

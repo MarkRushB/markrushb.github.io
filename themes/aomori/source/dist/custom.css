@@ -702,7 +702,7 @@ img:not([src]):not([srcset]) {
 .index .article .article-inner .article-body .article-title {
     font-size: 1.2rem;
     font-weight: 500;
-    padding: 0 0 12px
+    padding: 0 0 20px
 }
 
 .index .article .article-inner .article-body .article-title a {
@@ -725,7 +725,7 @@ img:not([src]):not([srcset]) {
     -webkit-box-pack: end;
     -ms-flex-pack: end;
     justify-content: flex-end;
-    padding: 20px 0 0
+    /* padding: 20px 0 0 */
 }
 
 .index .article .article-footer .article-more-info {
