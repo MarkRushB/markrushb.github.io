@@ -32,6 +32,8 @@ jobs:
       - name: Fetch and Process Discussion
         run: |
           echo '${{ toJson(github.event.discussion) }}' > new_discussion.json
+
+          echo $new_discussion.json
           
           title=$(jq -r '.title // empty' new_discussion.json)
           createdAt=$(jq -r '.createdAt // empty' new_discussion.json | sed 's/T/ /; s/Z//')
