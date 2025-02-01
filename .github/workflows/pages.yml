@@ -52,16 +52,18 @@ name: Sync Discussions to Hexo
 on:
   push:
     branches:
-      - main  # 依然支持 push 触发
+      - main  # 默认支持直接 push 触发
   discussion:
-    types: [created]  # **新增：当 Discussion 发布时触发**
+    types: [created]  # 支持当 Discussion 发布时触发
   workflow_dispatch:  # 允许手动触发
 
 jobs:
+  # 针对 discussion.created 的任务
   sync-discussions:
-    permissions:
-     contents: write
+    if: github.event_name == 'discussion'  # 仅在 Discussion 事件触发时运行
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 确保 GITHUB_TOKEN 有写权限
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -80,6 +82,13 @@ jobs:
       - name: Fetch New Discussion
         run: |
           echo '${{ toJson(github.event.discussion) }}' > new_discussion.json
+          title=$(jq -r '.title // empty' new_discussion.json)
+          body=$(jq -r '.body // empty' new_discussion.json)
+
+          if [[ -z "$title" || -z "$body" ]]; then
+            echo "No valid discussion data found. Exiting."
+            exit 0
+          fi
 
       - name: Convert Discussion to Markdown
         run: |
@@ -89,15 +98,8 @@ jobs:
           body=$(jq -r '.body' new_discussion.json)
 
           filename="source/_posts/$title.md"
-          echo -e "title: $title\ndate: $createdAt\n---\n$body\n" > "$filename"
+          echo -e "title: \"$title\"\ndate: $createdAt\n---\n$body\n" > "$filename"
 
-      # - name: Commit and Push New Post
-      #   run: |
-      #     git config --global user.name "github-actions[bot]"
-      #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      #     git add source/_posts/*.md
-      #     git commit -m "New Discussion Post: $title" || echo "No changes to commit"
-      #     git push origin main || echo "No changes to push"
       - name: Commit and Push New Post
         run: |
           git config --global user.name "github-actions[bot]"
@@ -106,10 +108,14 @@ jobs:
           git commit -m "New Discussion Post: $title" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/MarkRushB/markrushb.github.io.git main || echo "No changes to push"
 
-
+  # 针对 push 的任务，保留原有逻辑
   build-and-deploy:
-    needs: sync-discussions  # **确保 Discussions 更新后再 Build**
+    if: github.event_name == 'push'  # 仅在 Push 事件触发时运行
     runs-on: ubuntu-latest
+    permissions:
+      contents: read  # 只需要读取内容
+      pages: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -140,16 +146,7 @@ jobs:
         with:
           path: ./public
 
-  deploy:
-    needs: build-and-deploy
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
