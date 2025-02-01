@@ -36,6 +36,8 @@ jobs:
           # 调试输出整个 JSON 文件
           echo "打印 new_discussion.json 内容以进行调试:"
           cat new_discussion.json
+
+          cat new_discussion.json | jq '.created_at'
           
           
           title=$(jq -r '.title // empty' new_discussion.json)
