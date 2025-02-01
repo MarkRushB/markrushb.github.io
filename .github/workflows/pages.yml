@@ -63,16 +63,16 @@ jobs:
 
           # Build the markdown content
           markdown_content="---
-title: \"$title\"
-date: $createdAt"
-          [[ -n "$layout" ]] && markdown_content="$markdown_content
-layout: $layout"
-          [[ -n "$icon" ]] && markdown_content="$markdown_content
-icon: $icon"
-          markdown_content="$markdown_content
----
-
-$body"
+          title: \"$title\"
+          date: $createdAt"
+                    [[ -n "$layout" ]] && markdown_content="$markdown_content
+          layout: $layout"
+                    [[ -n "$icon" ]] && markdown_content="$markdown_content
+          icon: $icon"
+                    markdown_content="$markdown_content
+          ---
+          
+          $body"
 
           # Save to file
           mkdir -p source/_posts
