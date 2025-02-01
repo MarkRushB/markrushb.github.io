@@ -47,105 +47,94 @@
 #         uses: actions/deploy-pages@v4
 
 
-name: Sync Discussions to Hexo
+# 如果是通过 Discussion 触发，先运行 sync-discussions 再执行 build-and-deploy
+sync-discussions:
+  if: github.event_name == 'discussion'  # 仅在 discussion.created 事件触发时运行
+  runs-on: ubuntu-latest
+  permissions:
+    contents: write  # 确保有写权限
+  steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        submodules: recursive
 
-on:
-  push:
-    branches:
-      - main  # 默认支持直接 push 触发
-  discussion:
-    types: [created]  # 支持当 Discussion 发布时触发
-  workflow_dispatch:  # 允许手动触发
+    - name: Use Node.js 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20"
 
-jobs:
-  # 如果是 discussion.created，生成文章并提交到仓库
-  sync-discussions:
-    if: github.event_name == 'discussion'  # 仅在 Discussion 事件触发时运行
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write  # 确保 GITHUB_TOKEN 有写权限
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          submodules: recursive
+    - name: Install Dependencies
+      run: npm install
 
-      - name: Use Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
+    - name: Fetch New Discussion
+      run: |
+        echo '${{ toJson(github.event.discussion) }}' > new_discussion.json
+        title=$(jq -r '.title // empty' new_discussion.json)
+        body=$(jq -r '.body // empty' new_discussion.json)
 
-      - name: Install Dependencies
-        run: npm install
+        if [[ -z "$title" || -z "$body" ]]; then
+          echo "No valid discussion data found. Exiting."
+          exit 0
+        fi
 
-      - name: Fetch New Discussion
-        run: |
-          echo '${{ toJson(github.event.discussion) }}' > new_discussion.json
-          title=$(jq -r '.title // empty' new_discussion.json)
-          body=$(jq -r '.body // empty' new_discussion.json)
+    - name: Convert Discussion to Markdown
+      run: |
+        mkdir -p source/_posts
+        title=$(jq -r '.title' new_discussion.json | tr ' ' '-' | sed 's/[^a-zA-Z0-9_-]//g')
+        createdAt=$(jq -r '.createdAt' new_discussion.json)
+        body=$(jq -r '.body' new_discussion.json)
 
-          if [[ -z "$title" || -z "$body" ]]; then
-            echo "No valid discussion data found. Exiting."
-            exit 0
-          fi
+        filename="source/_posts/$title.md"
+        echo -e "title: \"$title\"\ndate: $createdAt\n---\n$body\n" > "$filename"
 
-      - name: Convert Discussion to Markdown
-        run: |
-          mkdir -p source/_posts
-          title=$(jq -r '.title' new_discussion.json | tr ' ' '-' | sed 's/[^a-zA-Z0-9_-]//g')
-          createdAt=$(jq -r '.createdAt' new_discussion.json)
-          body=$(jq -r '.body' new_discussion.json)
+    - name: Commit and Push New Post
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add source/_posts/*.md
+        git commit -m "New Discussion Post: $title" || echo "No changes to commit"
+        git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/MarkRushB/markrushb.github.io.git main || echo "No changes to push"
 
-          filename="source/_posts/$title.md"
-          echo -e "title: \"$title\"\ndate: $createdAt\n---\n$body\n" > "$filename"
+build-and-deploy:
+  runs-on: ubuntu-latest
+  # 如果是 push 事件，直接运行；如果是 discussion.created，等待 sync-discussions 完成
+  if: github.event_name == 'push' || success()
+  permissions:
+    contents: read  # 只需要读取内容
+    pages: write
+    id-token: write
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        submodules: recursive
 
-      - name: Commit and Push New Post
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add source/_posts/*.md
-          git commit -m "New Discussion Post: $title" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/MarkRushB/markrushb.github.io.git main || echo "No changes to push"
+    - name: Use Node.js 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20"
 
-  # 统一的构建和部署任务，无论是 push 还是 discussion 触发，都会执行
-  build-and-deploy:
-    needs: [sync-discussions]  # 如果是 discussion.created，确保先完成 sync-discussions
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read  # 只需要读取内容
-      pages: write
-      id-token: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          submodules: recursive
+    - name: Cache NPM dependencies
+      uses: actions/cache@v4
+      with:
+        path: node_modules
+        key: ${{ runner.OS }}-npm-cache
+        restore-keys: |
+          ${{ runner.OS }}-npm-cache
 
-      - name: Use Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
+    - name: Install Dependencies
+      run: npm install
 
-      - name: Cache NPM dependencies
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.OS }}-npm-cache
-          restore-keys: |
-            ${{ runner.OS }}-npm-cache
+    - name: Build Hexo
+      run: npm run build
 
-      - name: Install Dependencies
-        run: npm install
+    - name: Upload Pages artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./public
 
-      - name: Build Hexo
-        run: npm run build
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./public
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
