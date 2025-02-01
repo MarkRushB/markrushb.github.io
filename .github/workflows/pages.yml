@@ -64,6 +64,12 @@ jobs:
             icon=""
           fi
 
+          # 进一步调试输出
+          echo "提取的标题: $title"
+          echo "提取的创建时间: $createdAt"
+          echo "提取的标签: $labels"
+          echo "提取的内容: $body"
+
           # Build the markdown content
           markdown_content="---
           title: \"$title\"
