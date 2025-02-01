@@ -35,13 +35,10 @@ jobs:
 
           # 调试输出整个 JSON 文件
           echo "打印 new_discussion.json 内容以进行调试:"
-          cat new_discussion.json
 
-          cat new_discussion.json | jq '.created_at'
-          
-          
           title=$(jq -r '.title // empty' new_discussion.json)
-          createdAt=$(jq -r '.createdAt // empty' new_discussion.json | sed 's/T/ /; s/Z//')
+          createdAt=$(jq -r '.created_at // empty' new_discussion.json)
+          formattedDate=$(date -d "$createdAt" "+%Y-%m-%d %H:%M:%S" 2>/dev/null || echo "$createdAt")
           body=$(jq -r '.body // empty' new_discussion.json)
           labels=$(jq -r '.labels[].name // empty' new_discussion.json | tr '\n' ',' | sed 's/,$//')
 
@@ -68,14 +65,14 @@ jobs:
 
           # 进一步调试输出
           echo "提取的标题: $title"
-          echo "提取的创建时间: $createdAt"
+          echo "提取的创建时间: $formattedDate"
           echo "提取的标签: $labels"
           echo "提取的内容: $body"
 
           # Build the markdown content
           markdown_content="---
           title: \"$title\"
-          date: $createdAt"
+          date: $formattedDate"
                     [[ -n "$layout" ]] && markdown_content="$markdown_content
           layout: $layout"
                     [[ -n "$icon" ]] && markdown_content="$markdown_content
