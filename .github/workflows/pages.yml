@@ -87,6 +87,10 @@ jobs:
           filename="source/_posts/$safe_title.md"
           echo "$markdown_content" > "$filename"
 
+          # 调试输出整个 Markdown 文件
+          echo "生成的 Markdown 文件内容:"
+          cat "$filename"
+
   #     - name: Commit and Push New Post
   #       run: |
   #         git config --global user.name "github-actions[bot]"
