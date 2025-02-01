@@ -58,7 +58,7 @@ on:
   workflow_dispatch:  # 允许手动触发
 
 jobs:
-  # 针对 discussion.created 的任务
+  # 如果是 discussion.created，生成文章并提交到仓库
   sync-discussions:
     if: github.event_name == 'discussion'  # 仅在 Discussion 事件触发时运行
     runs-on: ubuntu-latest
@@ -108,9 +108,9 @@ jobs:
           git commit -m "New Discussion Post: $title" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/MarkRushB/markrushb.github.io.git main || echo "No changes to push"
 
-  # 针对 push 的任务，保留原有逻辑
+  # 统一的构建和部署任务，无论是 push 还是 discussion 触发，都会执行
   build-and-deploy:
-    if: github.event_name == 'push'  # 仅在 Push 事件触发时运行
+    needs: [sync-discussions]  # 如果是 discussion.created，确保先完成 sync-discussions
     runs-on: ubuntu-latest
     permissions:
       contents: read  # 只需要读取内容
@@ -149,4 +149,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
