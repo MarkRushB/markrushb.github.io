@@ -1,52 +1,3 @@
-# name: Pages
-
-# on:
-#   push:
-#     branches:
-#       - main # default branch
-
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v4
-#         with:
-#           token: ${{ secrets.GITHUB_TOKEN }}
-#           submodules: recursive
-#       - name: Use Node.js 20
-#         uses: actions/setup-node@v4
-#         with:
-#           node-version: "20"
-#       - name: Cache NPM dependencies
-#         uses: actions/cache@v4
-#         with:
-#           path: node_modules
-#           key: ${{ runner.OS }}-npm-cache
-#           restore-keys: |
-#             ${{ runner.OS }}-npm-cache
-#       - name: Install Dependencies
-#         run: npm install
-#       - name: Build
-#         run: npm run build
-#       - name: Upload Pages artifact
-#         uses: actions/upload-pages-artifact@v3
-#         with:
-#           path: ./public
-#   deploy:
-#     needs: build
-#     permissions:
-#       pages: write
-#       id-token: write
-#     environment:
-#       name: github-pages
-#       url: ${{ steps.deployment.outputs.page_url }}
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Deploy to GitHub Pages
-#         id: deployment
-#         uses: actions/deploy-pages@v4
-
-
 name: Sync Discussions to Hexo
 
 on:
@@ -58,9 +9,8 @@ on:
   workflow_dispatch:  # 允许手动触发
 
 jobs:
-  # 针对 discussion.created 的任务
   sync-discussions:
-    if: github.event_name == 'discussion'  # 仅在 Discussion 事件触发时运行
+    if: github.event_name == 'discussion'
     runs-on: ubuntu-latest
     permissions:
       contents: write  # 确保 GITHUB_TOKEN 有写权限
@@ -79,26 +29,53 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Fetch New Discussion
+      - name: Fetch and Process Discussion
         run: |
           echo '${{ toJson(github.event.discussion) }}' > new_discussion.json
+          
           title=$(jq -r '.title // empty' new_discussion.json)
+          createdAt=$(jq -r '.createdAt // empty' new_discussion.json | sed 's/T/ /; s/Z//')
           body=$(jq -r '.body // empty' new_discussion.json)
+          labels=$(jq -r '.labels[].name // empty' new_discussion.json | tr '\n' ',' | sed 's/,$//')
 
           if [[ -z "$title" || -z "$body" ]]; then
             echo "No valid discussion data found. Exiting."
             exit 0
           fi
 
-      - name: Convert Discussion to Markdown
-        run: |
-          mkdir -p source/_posts
-          title=$(jq -r '.title' new_discussion.json | tr ' ' '-' | sed 's/[^a-zA-Z0-9_-]//g')
-          createdAt=$(jq -r '.createdAt' new_discussion.json)
-          body=$(jq -r '.body' new_discussion.json)
+          # Normalize title for filename (remove special characters)
+          safe_title=$(echo "$title" | tr ' ' '-' | sed 's/[^a-zA-Z0-9_-]//g')
 
-          filename="source/_posts/$title.md"
-          echo -e "title: \"$title\"\ndate: $createdAt\n---\n$body\n" > "$filename"
+          # Default empty layout and icon
+          layout=""
+          icon=""
+
+          # Assign layout and icon based on labels
+          if echo "$labels" | grep -q "memo"; then
+            layout="tweet"
+            icon="sad"
+          elif echo "$labels" | grep -q "bullshit"; then
+            layout=""
+            icon=""
+          fi
+
+          # Build the markdown content
+          markdown_content="---
+title: \"$title\"
+date: $createdAt"
+          [[ -n "$layout" ]] && markdown_content="$markdown_content
+layout: $layout"
+          [[ -n "$icon" ]] && markdown_content="$markdown_content
+icon: $icon"
+          markdown_content="$markdown_content
+---
+
+$body"
+
+          # Save to file
+          mkdir -p source/_posts
+          filename="source/_posts/$safe_title.md"
+          echo "$markdown_content" > "$filename"
 
       - name: Commit and Push New Post
         run: |
@@ -108,13 +85,11 @@ jobs:
           git commit -m "New Discussion Post: $title" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/MarkRushB/markrushb.github.io.git main || echo "No changes to push"
 
-  # 通用的构建和部署任务（适用于 push 和 discussion.created）
   build-and-deploy:
     runs-on: ubuntu-latest
-    # 如果是 push 事件，直接运行；如果是 discussion.created，等待 sync-discussions 完成
     if: github.event_name == 'push' || success()
     permissions:
-      contents: read  # 只需要读取内容
+      contents: read
       pages: write
       id-token: write
     steps:
