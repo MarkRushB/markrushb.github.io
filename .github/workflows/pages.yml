@@ -101,7 +101,8 @@ jobs:
 
   build-and-deploy:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || success()
+    needs: sync-discussions  # 依赖 sync-discussions，但 push 时不受影响
+    if: github.event_name == 'push' || (github.event_name == 'discussion' && success())
     permissions:
       contents: read
       pages: write
