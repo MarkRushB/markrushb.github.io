@@ -149,8 +149,8 @@ jobs:
   #       uses: actions/deploy-pages@v4
   build:
     # 如果是 push，直接运行；如果是 discussion，需要等待 sync-discussions
-    needs: sync-discussions
-    if: github.event_name == 'push' || (github.event_name == 'discussion' && success())
+    # needs: sync-discussions
+    # if: github.event_name == 'push' || (github.event_name == 'discussion' && success())
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -188,13 +188,6 @@ jobs:
         with:
           path: ./public
 
-  debug-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 检查 Deploy 条件
-        run: |
-          echo "触发事件名称: ${{ github.event_name }}"
-          echo "Build 阶段结果: ${{ needs.build.result }}"
   deploy:
     # 依赖 build 阶段，确保在 build 完成后运行
     needs: build
