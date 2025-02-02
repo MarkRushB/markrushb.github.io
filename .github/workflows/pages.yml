@@ -91,6 +91,9 @@ jobs:
           echo "生成的 Markdown 文件内容:"
           cat "$filename"
 
+          echo "列出 source/_posts/ 目录中的文件:"
+          ls -lah source/_posts/
+
       - name: Commit and Push New Post
         run: |
           git config --global user.name "github-actions[bot]"
