@@ -150,7 +150,7 @@ jobs:
   build:
     # 如果是 push，直接运行；如果是 discussion，需要等待 sync-discussions
     # needs: sync-discussions
-    # if: github.event_name == 'push' || (github.event_name == 'discussion' && success())
+    if: github.event_name == 'push' || (github.event_name == 'discussion' && success())
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
