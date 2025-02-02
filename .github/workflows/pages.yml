@@ -188,6 +188,7 @@ jobs:
   deploy:
     # 依赖 build 阶段，确保在 build 完成后运行
     needs: build
+    if: success()
     permissions:
       pages: write
       id-token: write
