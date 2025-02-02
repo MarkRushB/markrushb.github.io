@@ -7,6 +7,9 @@ on:
   discussion:
     types: [created]  # 支持当 Discussion 发布时触发
   workflow_dispatch:  # 允许手动触发
+env:
+  ACTIONS_STEP_DEBUG: true
+  ACTIONS_RUNNER_DEBUG: true
 
 jobs:
   sync-discussions:
@@ -186,7 +189,6 @@ jobs:
           path: ./public
 
   debug-deploy:
-    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: 检查 Deploy 条件
