@@ -47,9 +47,6 @@ jobs:
             exit 0
           fi
 
-          # Normalize title for filename (remove special characters)
-          safe_title=$(echo "$title" | tr ' ' '-' | sed 's/[^a-zA-Z0-9_\-\u4e00-\u9fa5]//g')
-
           # Default empty layout and icon
           layout=""
           icon=""
@@ -84,7 +81,7 @@ jobs:
 
           # Save to file
           mkdir -p source/_posts
-          filename="source/_posts/$safe_title.md"
+          filename="source/_posts/$title.md"
 
           # 输出文件名以进行调试
           echo "生成的文件名为: $filename"
