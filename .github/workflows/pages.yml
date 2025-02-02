@@ -185,10 +185,18 @@ jobs:
         with:
           path: ./public
 
+  debug-deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检查 Deploy 条件
+        run: |
+          echo "触发事件名称: ${{ github.event_name }}"
+          echo "Build 阶段结果: ${{ needs.build.result }}"
+          echo "Build 是否成功: ${{ success() }}"
   deploy:
     # 依赖 build 阶段，确保在 build 完成后运行
     needs: build
-    if: success()
     permissions:
       pages: write
       id-token: write
@@ -197,6 +205,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+      - name: 调试 Deploy 条件
+        run: |
+          echo "Event Name: ${{ github.event_name }}"
+          echo "Build Success: ${{ success() }}"
+          echo "Needs Build: ${{ needs.build.result }}"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
