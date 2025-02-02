@@ -148,9 +148,8 @@ jobs:
   #       id: deployment
   #       uses: actions/deploy-pages@v4
   build:
-    # 如果是 push，直接运行；如果是 discussion，需要等待 sync-discussions
-    # needs: sync-discussions
-    if: github.event_name == 'push' || (github.event_name == 'discussion' && success())
+    needs: [sync-discussions]  # 仅当 discussion 事件时依赖 sync-discussions
+    if: github.event_name == 'push' || github.event_name == 'discussion'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
