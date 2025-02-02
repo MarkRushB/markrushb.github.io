@@ -193,7 +193,6 @@ jobs:
         run: |
           echo "触发事件名称: ${{ github.event_name }}"
           echo "Build 阶段结果: ${{ needs.build.result }}"
-          echo "Build 是否成功: ${{ success() }}"
   deploy:
     # 依赖 build 阶段，确保在 build 完成后运行
     needs: build
