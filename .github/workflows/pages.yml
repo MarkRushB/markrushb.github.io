@@ -154,6 +154,12 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           submodules: recursive
+          
+      - name: 拉取最新代码
+        run: |
+          echo "拉取远程最新代码"
+          git fetch origin
+          git reset --hard origin/main
 
       - name: Use Node.js 20
         uses: actions/setup-node@v4
