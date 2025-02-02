@@ -1,87 +1,60 @@
-name: Sync Discussions to Hexo
+name: Build and Deploy Hexo
 
 on:
-  discussion:
-    types: [created]  # 监听 discussion 创建
+  push:
+    branches:
+      - main  # 监听 main 分支 push 事件
   workflow_dispatch:  # 允许手动触发
 
-env:
-  ACTIONS_STEP_DEBUG: true
-  ACTIONS_RUNNER_DEBUG: true
-
 jobs:
-  sync-discussions:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write  # 需要写入权限
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           submodules: recursive
+          
+      - name: 拉取最新代码
+        run: |
+          echo "拉取远程最新代码"
+          git fetch origin
+          git reset --hard origin/main
 
       - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
+      - name: Cache NPM dependencies
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-npm-cache
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache
+
       - name: Install Dependencies
         run: npm install
 
-      - name: Fetch and Process Discussion
-        run: |
-          echo '${{ toJson(github.event.discussion) }}' > new_discussion.json
+      - name: Build
+        run: npm run build
 
-          title=$(jq -r '.title // empty' new_discussion.json)
-          createdAt=$(jq -r '.created_at // empty' new_discussion.json)
-          formattedDate=$(date -d "$createdAt" "+%Y-%m-%d %H:%M:%S" 2>/dev/null || echo "$createdAt")
-          body=$(jq -r '.body // empty' new_discussion.json)
-          labels=$(jq -r '.labels[].name // empty' new_discussion.json | tr '\n' ',' | sed 's/,$//')
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
 
-          if [[ -z "$title" || -z "$body" ]]; then
-            echo "No valid discussion data found. Exiting."
-            exit 0
-          fi
-
-          layout=""
-          icon=""
-
-          if echo "$labels" | grep -q "memo"; then
-            layout="tweet"
-            icon="sad"
-          elif echo "$labels" | grep -q "bullshit"; then
-            layout=""
-            icon=""
-          fi
-
-          markdown_content="---
-          title: \"$title\"
-          date: $formattedDate"
-                    [[ -n "$layout" ]] && markdown_content="$markdown_content
-          layout: $layout"
-                    [[ -n "$icon" ]] && markdown_content="$markdown_content
-          icon: $icon"
-                    markdown_content="$markdown_content
-          ---
-          
-          $body"
-
-          mkdir -p source/_posts
-          filename="source/_posts/$title.md"
-          echo "$markdown_content" > "$filename"
-
-      - name: Commit and Push New Post
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add source/_posts/*.md
-          git commit -m "New Discussion Post: $title" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/MarkRushB/markrushb.github.io.git main || echo "No changes to push"
-
-      - name: Trigger Build & Deploy Workflow
-        run: |
-          curl -X POST -H "Authorization: token ${{ secrets.GH_PAT }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/MarkRushB/markrushb.github.io/actions/workflows/build-and-deploy.yml/dispatches \
-            -d '{"ref":"main"}'
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
