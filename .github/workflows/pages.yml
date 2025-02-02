@@ -85,6 +85,10 @@ jobs:
           # Save to file
           mkdir -p source/_posts
           filename="source/_posts/$safe_title.md"
+
+          # 输出文件名以进行调试
+          echo "生成的文件名为: $filename"
+          
           echo "$markdown_content" > "$filename"
 
           # 调试输出整个 Markdown 文件
