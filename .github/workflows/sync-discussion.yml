@@ -83,9 +83,9 @@ jobs:
           git add source/_posts/*.md
           git commit -m "New Discussion Post: $title [skip ci]" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/MarkRushB/markrushb.github.io.git main || echo "No changes to push"
-      # - name: Trigger Build & Deploy Workflow
-      #   run: |
-      #     curl -X POST -H "Authorization: token ${{ secrets.GH_PAT }}" \
-      #       -H "Accept: application/vnd.github.v3+json" \
-      #       https://api.github.com/repos/MarkRushB/markrushb.github.io/actions/workflows/build-and-deploy.yml/dispatches \
-      #       -d '{"ref":"main"}'
+      - name: Trigger Build & Deploy Workflow
+        run: |
+          curl -X POST -H "Authorization: token ${{ secrets.GH_PAT }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/MarkRushB/markrushb.github.io/actions/workflows/build-and-deploy.yml/dispatches \
+            -d '{"ref":"main"}'
