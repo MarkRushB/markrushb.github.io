@@ -1,0 +1,17 @@
+<div class="retrolog-container">
+    <header class="retrolog-header">
+        <div class="header-content">
+            <div class="header-title-wrapper">
+                <a href="/">复古日志</a>
+                <p class="header-subtitle">
+                    CHRONICLE & ECHO — 寻找数字生活的留白与深度
+                </p>
+            </div>
+            <nav class="header-nav">
+                <% for (var i in config.aomori_menu){ %>
+                <a href="<%- url_for(config.aomori_menu[i]) %>"><%= i %> / <%= i %></a>
+                <% } %>
+            </nav>
+        </div>
+    </header>
+</div>

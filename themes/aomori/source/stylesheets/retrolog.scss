@@ -1,0 +1,1194 @@
+/* ========================================
+   Retrolog Design System - 复古日志设计系统
+   基于 retrolog 项目的设计语言
+   ======================================== */
+
+/* === 字体导入 === */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;600&display=swap');
+
+/* === 设计 Token === */
+:root {
+  /* 颜色系统 */
+  --retrolog-bg-primary: #f4f1ea;
+  --retrolog-bg-card: #ffffff;
+  --retrolog-bg-echo: #fffcf0;
+  --retrolog-border: #2c2c2c;
+  --retrolog-text-primary: #2c2c2c;
+  --retrolog-text-secondary: #78716c;
+  --retrolog-text-tertiary: #a8a29e;
+  --retrolog-accent: #1c1917;
+  
+  /* 字体家族 */
+  --retrolog-font-serif: "Noto Serif SC", serif;
+  --retrolog-font-mono: 'JetBrains Mono', monospace;
+  --retrolog-font-sans: 'Inter', sans-serif;
+  
+  /* 间距系统 */
+  --retrolog-space-xs: 0.5rem;
+  --retrolog-space-sm: 1rem;
+  --retrolog-space-md: 1.5rem;
+  --retrolog-space-lg: 2rem;
+  --retrolog-space-xl: 3rem;
+  --retrolog-space-2xl: 5rem;
+  
+  /* 阴影系统 */
+  --retrolog-shadow-hard: 6px 6px 0px 0px #2c2c2c;
+  --retrolog-shadow-hard-sm: 3px 3px 0px 0px #2c2c2c;
+  --retrolog-shadow-soft: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* === 全局样式覆盖 === */
+body {
+  background-color: var(--retrolog-bg-primary) !important;
+  color: var(--retrolog-text-primary) !important;
+  font-family: var(--retrolog-font-sans) !important;
+  background-image: url("https://www.transparenttextures.com/patterns/pinstriped-suit.png");
+  background-attachment: fixed;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+}
+
+/* === 容器布局 === */
+.retrolog-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* === Header 复古风格 === */
+.retrolog-header {
+  padding: 3rem 0;
+  border-bottom: 2px solid var(--retrolog-border);
+  margin-bottom: 3rem;
+  
+  .header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .header-title-wrapper {
+    a {
+      font-size: 2.5rem;
+      font-family: var(--retrolog-font-serif);
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      color: var(--retrolog-text-primary);
+      text-decoration: none;
+      transition: font-style 0.5s ease;
+      
+      &:hover {
+        font-style: italic;
+      }
+    }
+  }
+  
+  .header-subtitle {
+    color: var(--retrolog-text-tertiary);
+    font-family: var(--retrolog-font-mono);
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    max-width: 28rem;
+    line-height: 1.6;
+  }
+  
+  .header-nav {
+    display: flex;
+    gap: 1.5rem;
+    font-family: var(--retrolog-font-mono);
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    
+    a {
+      color: var(--retrolog-text-primary);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        text-decoration: line-through;
+        text-decoration-thickness: 2px;
+      }
+      
+      &.admin-link {
+        color: var(--retrolog-text-secondary);
+        
+        &:hover {
+          color: var(--retrolog-border);
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}
+
+/* === Timeline 时间轴 === */
+.retrolog-timeline {
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: -2rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #e7e5e4;
+  }
+  
+  .timeline-item {
+    position: relative;
+    margin-bottom: 1rem;
+    
+    .timeline-date-label {
+      display: none;
+      position: absolute;
+      left: -6rem;
+      top: 3rem;
+      font-family: var(--retrolog-font-mono);
+      font-size: 0.65rem;
+      color: var(--retrolog-text-tertiary);
+      transform: rotate(-90deg);
+      transform-origin: right center;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+  }
+}
+
+/* === Chronicle Card - 编年史卡片 === */
+.retrolog-chronicle {
+  background-color: var(--retrolog-bg-card);
+  padding: 1.25rem 1.5rem;
+  border: 2px solid var(--retrolog-border);
+  box-shadow: var(--retrolog-shadow-hard);
+  margin-bottom: 1.75rem;
+  position: relative;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  cursor: pointer;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: -2.35rem;
+    top: 3rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background-color: var(--retrolog-bg-card);
+    border: 2px solid var(--retrolog-border);
+    z-index: 10;
+    transition: background-color 0.3s ease;
+  }
+  
+  &:hover {
+    transform: translate(-0.25rem, -0.5rem);
+    
+    &::before {
+      background-color: var(--retrolog-border);
+    }
+    
+    .chronicle-title {
+      color: var(--retrolog-text-secondary);
+    }
+  }
+  
+  .chronicle-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+    
+    .meta-date-wrapper {
+      display: flex;
+      flex-direction: column;
+      
+      .meta-date {
+        font-family: var(--retrolog-font-mono);
+        font-size: 0.625rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3em;
+        color: var(--retrolog-border);
+        font-weight: 700;
+      }
+      
+      .meta-type {
+        color: var(--retrolog-text-tertiary);
+        font-family: var(--retrolog-font-serif);
+        font-style: italic;
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+      }
+    }
+    
+    .meta-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      
+      .tag-item {
+        font-size: 0.65rem;
+        padding: 0.125rem 0.5rem;
+        background-color: #fafaf9;
+        color: var(--retrolog-text-secondary);
+        border: 1px solid #f5f5f4;
+        border-radius: 0.125rem;
+        font-family: var(--retrolog-font-mono);
+        text-transform: uppercase;
+        letter-spacing: -0.025em;
+      }
+    }
+  }
+  
+  .chronicle-title {
+    font-size: 1.5rem;
+    font-family: var(--retrolog-font-serif);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+    transition: color 0.3s ease;
+    
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+  
+  .chronicle-excerpt {
+    position: relative;
+    margin-bottom: 0.75rem;
+    
+    p {
+      color: var(--retrolog-text-secondary);
+      line-height: 1.6;
+      font-family: var(--retrolog-font-serif);
+      font-size: 0.7rem;
+      padding-left: 1rem;
+      border-left: 2px solid var(--retrolog-border);
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+      margin: 0;
+    }
+  }
+  
+  .chronicle-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid #fafaf9;
+    
+    .footer-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      
+      .read-more-btn {
+        font-family: var(--retrolog-font-mono);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        background-color: var(--retrolog-border);
+        color: white;
+        padding: 0.5rem 1rem;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+        
+        &:hover {
+          background-color: black;
+        }
+      }
+      
+      .read-time {
+        font-family: var(--retrolog-font-mono);
+        font-size: 0.625rem;
+        color: var(--retrolog-text-tertiary);
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+      }
+    }
+    
+    .footer-icon {
+      color: #e7e5e4;
+      transition: color 0.3s ease;
+      
+      svg {
+        width: 24px;
+        height: 24px;
+        stroke: currentColor;
+        stroke-width: 2;
+        fill: none;
+      }
+    }
+  }
+  
+  &:hover .footer-icon {
+    color: var(--retrolog-border);
+  }
+}
+
+/* === Echo Card - 回响卡片 === */
+.retrolog-echo {
+  position: relative;
+  margin-bottom: 2rem;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: -2.35rem;
+    top: 1.5rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background-color: #d6d3d1;
+    border: 2px solid var(--retrolog-bg-primary);
+    z-index: 10;
+    transition: background-color 0.3s ease;
+  }
+  
+  &:hover::before {
+    background-color: var(--retrolog-border);
+  }
+  
+  .echo-inner {
+    position: relative;
+    background-color: var(--retrolog-bg-echo);
+    padding: 1.5rem;
+    border: 2px solid var(--retrolog-border);
+    box-shadow: var(--retrolog-shadow-soft);
+    transform: rotate(-0.3deg);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    max-width: 42rem;
+    
+    &::before {
+      content: '"';
+      position: absolute;
+      top: -0.5rem;
+      right: -0.25rem;
+      font-size: 6rem;
+      color: #f5f5f4;
+      font-family: var(--retrolog-font-serif);
+      user-select: none;
+      pointer-events: none;
+      opacity: 0.4;
+      font-style: italic;
+    }
+    
+    &:hover {
+      transform: rotate(0deg);
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.08);
+      transform: translateY(-0.25rem);
+    }
+    
+    .echo-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 10;
+      
+      .echo-date {
+        font-family: var(--retrolog-font-mono);
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--retrolog-text-tertiary);
+        background-color: white;
+        border: 1px solid #f5f5f4;
+        padding: 0.125rem 0.5rem;
+      }
+      
+      .echo-type {
+        color: #d6d3d1;
+        font-family: var(--retrolog-font-serif);
+        font-style: italic;
+        font-size: 0.625rem;
+        letter-spacing: -0.025em;
+      }
+    }
+    
+    .echo-content {
+      position: relative;
+      z-index: 10;
+      
+      blockquote {
+        font-size: 0.7rem;
+        color: var(--retrolog-text-secondary);
+        line-height: 1.6;
+        font-family: var(--retrolog-font-serif);
+        margin: 0 0 1rem 0;
+        padding-right: 0.5rem;
+        
+        p {
+          margin: 0;
+        }
+      }
+    }
+    
+    .echo-footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+      position: relative;
+      z-index: 10;
+      
+      .echo-tag {
+        font-size: 0.65rem;
+        font-family: var(--retrolog-font-mono);
+        color: var(--retrolog-text-tertiary);
+        transition: color 0.2s ease;
+        letter-spacing: -0.025em;
+        
+        &:hover {
+          color: var(--retrolog-text-secondary);
+        }
+      }
+    }
+    
+    .echo-bottom-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 0.125rem;
+      background-color: rgba(28, 25, 23, 0.1);
+      transition: background-color 0.3s ease;
+    }
+  }
+  
+  &:hover .echo-bottom-line {
+    background-color: var(--retrolog-border);
+  }
+}
+
+/* === Footer 复古风格 === */
+.retrolog-footer {
+  padding: 4rem 0;
+  margin-top: 5rem;
+  border-top: 2px solid var(--retrolog-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--retrolog-bg-primary);
+  
+  .footer-subscribe {
+    max-width: 28rem;
+    width: 100%;
+    margin-bottom: 3rem;
+    padding: 1.5rem;
+    background-color: white;
+    border: 2px solid var(--retrolog-border);
+    box-shadow: var(--retrolog-shadow-hard);
+    text-align: center;
+    
+    h4 {
+      font-family: var(--retrolog-font-serif);
+      font-size: 1.125rem;
+      margin-bottom: 0.75rem;
+      font-weight: 700;
+    }
+    
+    p {
+      font-family: var(--retrolog-font-serif);
+      font-style: italic;
+      font-size: 0.75rem;
+      margin-bottom: 1.25rem;
+      color: var(--retrolog-text-secondary);
+      line-height: 1.6;
+    }
+    
+    .subscribe-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      
+      input {
+        width: 100%;
+        background-color: #fafaf9;
+        border: 1px solid #e7e5e4;
+        padding: 0.75rem;
+        font-size: 0.75rem;
+        font-family: var(--retrolog-font-mono);
+        outline: none;
+        transition: border-color 0.2s ease;
+        
+        &:focus {
+          border-color: var(--retrolog-border);
+        }
+      }
+      
+      button {
+        width: 100%;
+        background-color: var(--retrolog-border);
+        color: white;
+        font-family: var(--retrolog-font-mono);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        font-weight: 700;
+        padding: 0.75rem;
+        letter-spacing: 0.15em;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        border: none;
+        
+        &:hover {
+          background-color: black;
+        }
+      }
+    }
+  }
+  
+  .footer-quote {
+    font-family: var(--retrolog-font-serif);
+    font-style: italic;
+    color: var(--retrolog-text-tertiary);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 1.125rem;
+  }
+  
+  .footer-credits {
+    font-family: var(--retrolog-font-mono);
+    font-size: 0.625rem;
+    color: var(--retrolog-text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    text-align: center;
+  }
+}
+
+/* === 文章详情页 === */
+.retrolog-post-detail {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  position: relative;
+  
+  .post-back-btn {
+    margin-bottom: 5rem;
+    font-family: var(--retrolog-font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--retrolog-text-tertiary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: var(--retrolog-border);
+      
+      .back-arrow {
+        transform: translateX(-0.25rem);
+      }
+    }
+    
+    .back-arrow {
+      transition: transform 0.2s ease;
+    }
+  }
+  
+  .post-header {
+    margin-bottom: 3rem;
+    
+    .post-meta-line {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      
+      .post-date {
+        font-family: var(--retrolog-font-mono);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3em;
+        color: var(--retrolog-text-tertiary);
+      }
+      
+      .meta-divider {
+        flex: 1;
+        height: 1px;
+        background-color: #f5f5f4;
+      }
+    }
+    
+    .post-title {
+      font-size: 2rem;
+      font-family: var(--retrolog-font-serif);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      line-height: 1.3;
+      
+      @media (max-width: 768px) {
+        font-size: 1.5rem;
+      }
+    }
+    
+    .post-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      
+      .tag-item {
+        padding: 0.25rem 1rem;
+        background-color: #f5f5f4;
+        color: var(--retrolog-text-secondary);
+        font-size: 0.625rem;
+        font-family: var(--retrolog-font-mono);
+        border-radius: 9999px;
+      }
+    }
+  }
+  
+  // 磨砂玻璃容器
+  .frosted-container {
+    padding: 3rem;
+    
+    @media (max-width: 768px) {
+      padding: 2rem 1.5rem;
+    }
+  }
+  
+  .post-content {
+    font-family: var(--retrolog-font-serif);
+    font-size: 0.8rem;
+    line-height: 1.8;
+    color: var(--retrolog-text-primary);
+    
+    p {
+      margin-bottom: 1.5rem;
+      text-align: justify;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--retrolog-font-serif);
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+    
+    h1 { font-size: 1.4rem; }
+    h2 { font-size: 1.2rem; }
+    h3 { font-size: 1rem; }
+    h4 { font-size: 0.9rem; }
+    
+    a {
+      color: var(--retrolog-border);
+      text-decoration: underline;
+      transition: opacity 0.2s ease;
+      
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+    
+    blockquote {
+      margin: 2rem 0;
+      padding-left: 1.5rem;
+      border-left: 3px solid var(--retrolog-border);
+      color: var(--retrolog-text-secondary);
+      font-style: italic;
+    }
+    
+    code {
+      font-family: var(--retrolog-font-mono);
+      font-size: 0.7em;
+      padding: 0.125rem 0.375rem;
+    }
+    
+    pre {
+      color: var(--retrolog-text-primary);
+      padding: 1.5rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      
+      code {
+        padding: 0;
+      }
+    }
+    
+    ul, ol {
+      margin-bottom: 1.5rem;
+      padding-left: 2rem;
+      
+      li {
+        margin-bottom: 0.5rem;
+      }
+    }
+    
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 2rem auto;
+    }
+  }
+}
+
+/* === 抽屉式目录 === */
+
+/* 背景遮罩 */
+.toc-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(28, 25, 23, 0.1);
+  backdrop-filter: blur(2px);
+  z-index: 60;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+body.toc-open .toc-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 浮动标签按钮 */
+.toc-float-tab {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 70;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.5s ease;
+    
+    .toc-tab-inner {
+      background-color: var(--retrolog-border);
+      color: white;
+      padding: 1.5rem 0.4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      border-radius: 0.5rem 0 0 0.5rem;
+      box-shadow: var(--retrolog-shadow-hard-sm);
+      border: 2px solid var(--retrolog-border);
+      border-right: 0;
+      transition: all 0.3s ease;
+      
+      &:hover .toc-tab-text {
+        letter-spacing: 0.6em;
+      }
+    }
+    
+    .toc-tab-text {
+      font-family: var(--retrolog-font-mono);
+      font-size: 0.5rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.4em;
+      writing-mode: vertical-lr;
+      transform: rotate(180deg);
+      transition: letter-spacing 0.3s ease;
+    }
+    
+    .toc-tab-divider {
+      width: 1px;
+      height: 2rem;
+      background-color: #78716c;
+      border-left: 1px dashed #a8a29e;
+    }
+    
+  .toc-tab-icon {
+    font-family: var(--retrolog-font-mono);
+    font-size: 0.625rem;
+  }
+}
+
+body.toc-open .toc-float-tab {
+  transform: translateY(-50%) translateX(100%);
+}
+
+/* 抽屉面板 */
+.toc-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 16rem;
+  background-color: #fdfcfb;
+  z-index: 65;
+  border-left: 4px solid var(--retrolog-border);
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.15);
+  transform: translateX(100%);
+  transition: transform 0.5s ease;
+  
+  @media (min-width: 768px) {
+    width: 18rem;
+  }
+}
+
+body.toc-open .toc-drawer {
+  transform: translateX(0);
+}
+
+.toc-drawer-inner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 2rem;
+    overflow-y: auto;
+    background-image: url("https://www.transparenttextures.com/patterns/pinstriped-suit.png");
+  }
+  
+  .toc-drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f5f5f4;
+    
+    .toc-drawer-subtitle {
+      font-family: var(--retrolog-font-mono);
+      font-size: 0.45rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4em;
+      color: #d6d3d1;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    
+    .toc-drawer-title {
+      font-family: var(--retrolog-font-serif);
+      font-size: 1rem;
+      font-weight: 700;
+      font-style: italic;
+      color: var(--retrolog-border);
+    }
+    
+    .toc-drawer-close {
+      font-family: var(--retrolog-font-mono);
+      font-size: 0.75rem;
+      color: var(--retrolog-text-tertiary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 0.25rem;
+      transition: color 0.2s ease;
+      
+      &:hover {
+        color: var(--retrolog-border);
+      }
+    }
+  }
+  
+  .toc-drawer-nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    
+    ol {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: toc-counter;
+      
+      > li {
+        counter-increment: toc-counter;
+        margin-bottom: 1.25rem;
+        
+        > a {
+          display: flex;
+          align-items: baseline;
+          gap: 0.75rem;
+          text-decoration: none;
+          transition: all 0.2s ease;
+          
+          &::before {
+            content: counter(toc-counter, decimal-leading-zero);
+            font-family: var(--retrolog-font-mono);
+            font-size: 0.45rem;
+            color: #d6d3d1;
+            font-weight: 700;
+            transition: color 0.2s ease;
+          }
+          
+          &:hover {
+            &::before {
+              color: var(--retrolog-border);
+            }
+            
+            color: #1c1917;
+            font-style: italic;
+          }
+        }
+        
+        a {
+          font-family: var(--retrolog-font-serif);
+          font-size: 0.8rem;
+          color: var(--retrolog-text-secondary);
+          line-height: 1.3;
+        }
+        
+        ol {
+          margin-left: 1.25rem;
+          margin-top: 0.5rem;
+          
+          li {
+            margin-bottom: 0.5rem;
+            
+            a {
+              font-size: 0.7rem;
+              color: var(--retrolog-text-tertiary);
+              display: block;
+              
+              &:hover {
+                color: var(--retrolog-text-secondary);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  .toc-drawer-footer {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    
+    .toc-drawer-meta {
+      border-top: 1px solid #f5f5f4;
+      padding-top: 1rem;
+      font-family: var(--retrolog-font-mono);
+      font-size: 0.5rem;
+      color: #d6d3d1;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      line-height: 1.8;
+    }
+  }
+
+/* === 响应式设计 === */
+@media (min-width: 768px) {
+  .retrolog-timeline {
+    &::before {
+      display: block;
+    }
+    
+    .timeline-item .timeline-date-label {
+      display: block;
+    }
+  }
+  
+  .retrolog-chronicle::before {
+    display: block;
+  }
+  
+  .retrolog-echo::before {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .retrolog-header {
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    
+    .header-title-wrapper a {
+      font-size: 2rem;
+    }
+    
+    .header-content {
+      flex-direction: column;
+    }
+    
+    .header-nav {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+  
+  .retrolog-chronicle {
+    padding: 1.5rem;
+    
+    .chronicle-title {
+      font-size: 1.25rem;
+    }
+    
+    .chronicle-excerpt p {
+      font-size: 0.8125rem;
+    }
+  }
+  
+  .retrolog-echo .echo-inner {
+    padding: 1.25rem;
+    
+    .echo-content blockquote {
+      font-size: 0.8125rem;
+    }
+  }
+  
+  .retrolog-footer {
+    padding: 3rem 0;
+    margin-top: 3rem;
+    
+    .footer-subscribe {
+      padding: 1.5rem;
+    }
+  }
+}
+
+/* === 动画 === */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.retrolog-chronicle,
+.retrolog-echo {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* === 滚动条样式 === */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--retrolog-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--retrolog-text-tertiary);
+  border-radius: 6px;
+  
+  &:hover {
+    background: var(--retrolog-text-secondary);
+  }
+}
+
+.post-toc .toc-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.post-toc .toc-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.post-toc .toc-content::-webkit-scrollbar-thumb {
+  background: #d6d3d1;
+  border-radius: 3px;
+  
+  &:hover {
+    background: var(--retrolog-text-tertiary);
+  }
+}
+
+/* === 分页样式 === */
+.pagination {
+  font-family: var(--retrolog-font-mono);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 3rem 0;
+  
+  a {
+    color: var(--retrolog-text-primary);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    border: 2px solid var(--retrolog-border);
+    display: inline-block;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background-color: var(--retrolog-border);
+      color: white;
+      transform: translate(-2px, -2px);
+      box-shadow: var(--retrolog-shadow-hard-sm);
+    }
+    
+    &.current {
+      background-color: var(--retrolog-border);
+      color: white;
+    }
+  }
+  
+  .page-number {
+    font-weight: 700;
+  }
+  
+  .extend {
+    color: var(--retrolog-text-tertiary);
+    padding: 0.5rem;
+  }
+}
+
+/* === Archive 归档页面样式 === */
+.archives-wrap {
+  margin-bottom: 2.5rem;
+  
+  .archive-year-wrap {
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--retrolog-border);
+    
+    .archive-year {
+      font-family: var(--retrolog-font-mono);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--retrolog-border);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+  }
+  
+  .archives {
+    .archive-article {
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      .archive-article-title {
+        font-family: var(--retrolog-font-serif);
+        font-size: 0.85rem;
+        font-weight: 400;
+        margin: 0;
+        line-height: 1.4;
+        
+        a {
+          color: var(--retrolog-text-primary);
+          text-decoration: none;
+          transition: color 0.2s ease;
+          
+          &:hover {
+            color: var(--retrolog-text-secondary);
+          }
+        }
+      }
+    }
+  }
+}

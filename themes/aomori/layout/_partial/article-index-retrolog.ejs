@@ -1,0 +1,49 @@
+<article class="retrolog-chronicle">
+    <!-- 时间轴上的核心锚点 -->
+    
+    <div class="chronicle-meta">
+        <div class="meta-date-wrapper">
+            <span class="meta-date">
+                <%- date(post.date, 'YYYY-MM-DD') %>
+            </span>
+        </div>
+        <div class="meta-tags">
+            <% if (post.tags && post.tags.length){ %>
+                <% post.tags.forEach(function(tag){ %>
+                    <span class="tag-item"><%= tag.name %></span>
+                <% }); %>
+            <% } %>
+        </div>
+    </div>
+    
+    <h2 class="chronicle-title">
+        <a href="<%- url_for(post.path) %>"><%= post.title %></a>
+    </h2>
+    
+    <% if (post.excerpt || post.description) { %>
+    <div class="chronicle-excerpt">
+        <% if (post.excerpt){ %>
+            <%- post.excerpt %>
+        <% } else if (post.description) { %>
+            <p><%= post.description %></p>
+        <% } %>
+    </div>
+    <% } %>
+    
+    <div class="chronicle-footer">
+        <div class="footer-actions">
+            <a href="<%- url_for(post.path) %>" class="read-more-btn">
+                阅读全文 / READ
+            </a>
+            <span class="read-time">
+                Estimated 5 min read
+            </span>
+        </div>
+        <div class="footer-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </div>
+    </div>
+</article>

@@ -2,25 +2,13 @@
 
 <body>
 
-    <%- partial('_partial/header') %>
+    <%- partial('_partial/header-retrolog') %>
 
-    <div class="container">
-        <div class="main">
-            <section class="inner">
-                <section class="inner-main">
-                    <%- body %>
-                </section>
-            </section>
-
-            <% if (page.sidebar !== false){ %>
-            <aside class="sidebar <% if (config.aomori_search_algolia){ %>sidebar-search-fix<% } %>">
-                <%- partial('_partial/sidebar') %>
-            </aside>
-            <% } %>
-        </div>
+    <div class="retrolog-container">
+        <%- body %>
     </div>
 
-    <%- partial('_partial/footer') %>
+    <%- partial('_partial/footer-retrolog') %>
 
 </body>
 

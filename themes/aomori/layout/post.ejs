@@ -1,3 +1,78 @@
-<div class="<%= page.layout %>">
-    <%- partial('_partial/article', {post: page, index: false}) %>
+<div class="retrolog-post-detail">
+    <a href="javascript:history.back()" class="post-back-btn">
+        <span class="back-arrow">←</span> 返回归档 / BACK
+    </a>
+    
+    <% 
+    // 生成目录数据
+    var tocContent = toc(page.content, {list_number: false, max_depth: 3});
+    var hasToc = tocContent && tocContent.length > 100;
+    %>
+    
+    <% if (hasToc) { %>
+    <!-- 背景遮罩 -->
+    <div class="toc-backdrop"></div>
+    
+    <!-- 浮动标签按钮 -->
+    <button class="toc-float-tab">
+        <div class="toc-tab-inner">
+            <span class="toc-tab-text">INDEX 目录</span>
+            <div class="toc-tab-divider"></div>
+            <span class="toc-tab-icon">—</span>
+        </div>
+    </button>
+    
+    <!-- 抽屉面板 -->
+    <aside class="toc-drawer">
+        <div class="toc-drawer-inner">
+            <header class="toc-drawer-header">
+                <div>
+                    <h4 class="toc-drawer-subtitle">ARCHIVE INDEX</h4>
+                    <h3 class="toc-drawer-title">档案索引</h3>
+                </div>
+                <button class="toc-drawer-close">
+                    CLOSE [×]
+                </button>
+            </header>
+            
+            <nav class="toc-drawer-nav">
+                <%- tocContent %>
+            </nav>
+            
+            <footer class="toc-drawer-footer">
+                <div class="toc-drawer-meta">
+                    FILE ID: <%= page.slug %><br/>
+                    TYPE: CHRONICLE<br/>
+                    DATE: <%- date(page.date, 'YYYY-MM-DD') %>
+                </div>
+            </footer>
+        </div>
+    </aside>
+    <% } %>
+    
+    <!-- 磨砂玻璃容器 -->
+    <div class="frosted-container">
+        <header class="post-header">
+            <div class="post-meta-line">
+                <span class="post-date"><%- date(page.date, 'YYYY-MM-DD') %></span>
+                <div class="meta-divider"></div>
+            </div>
+            <h1 class="post-title"><%= page.title %></h1>
+            <% if (page.tags && page.tags.length){ %>
+                <div class="post-tags">
+                    <% page.tags.forEach(function(tag){ %>
+                        <span class="tag-item">#<%= tag.name %></span>
+                    <% }); %>
+                </div>
+            <% } %>
+        </header>
+
+        <div class="post-content">
+            <%- page.content %>
+        </div>
+    </div>
+    
+    <% if (theme.aomori_comment && theme.aomori_comment.enable){ %>
+        <%- partial('_partial/post/comments') %>
+    <% } %>
 </div>

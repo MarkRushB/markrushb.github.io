@@ -1,0 +1,38 @@
+<%- partial('_partial/head') %>
+
+<body>
+    <%- partial('_partial/header-retrolog') %>
+
+    <div class="retrolog-container">
+        <div class="retrolog-timeline">
+            <% page.posts.each(function(post){ %>
+                <div class="timeline-item">
+                    <div class="timeline-date-label">
+                        <%- date(post.date, 'YYYY-MM-DD') %>
+                    </div>
+                    
+                    <% if (post.layout === 'tweet'){ %>
+                        <%- partial('_partial/article-tweet-retrolog', {post: post}) %>
+                    <% } else { %>
+                        <%- partial('_partial/article-index-retrolog', {post: post, index: true}) %>
+                    <% } %>
+                </div>
+            <% }) %>
+
+            <% if (page.total > 1){ %>
+                <nav class="pagination" style="margin-top: 3rem; text-align: center;">
+                    <%- paginator({
+                        prev_text: '← 上一页 / PREV',
+                        next_text: '下一页 / NEXT →',
+                        mid_size: 2
+                    }) %>
+                </nav>
+            <% } %>
+        </div>
+    </div>
+
+    <%- partial('_partial/footer-retrolog') %>
+
+</body>
+
+</html>

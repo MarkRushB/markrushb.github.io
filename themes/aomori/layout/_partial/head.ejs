@@ -58,6 +58,14 @@
     <%- css(`/dist/build.css?v=${theme.version}`) %>
 
     <%- css(`/dist/custom.css?v=${theme.version}`) %>
+    
+    <!-- Retrolog Design System -->
+    <%- css('/stylesheets/retrolog.css') %>
+    
+    <!-- Retrolog TOC Script -->
+    <% if (is_post()) { %>
+    <%- js('/javascripts/retrolog-toc.js') %>
+    <% } %>
 
     <script>
         window.isPost = <%- is_post() %>

@@ -1,3 +1,8 @@
-<article class="archive-article archive-type-<%= post.layout %>">
-  <%- partial('post/title', {class_name: 'archive-article-title'}) %>
+<article class="archive-article archive-type-<%= post.layout %>" style="padding: 0.5rem 0; border-bottom: 1px solid #f5f5f4;">
+  <div style="display: flex; align-items: baseline; gap: 1rem;">
+    <time style="font-family: var(--retrolog-font-mono); font-size: 0.6rem; color: var(--retrolog-text-tertiary); letter-spacing: 0.1em; min-width: 5.5rem;">
+      <%- date(post.date, 'MM/DD') %>
+    </time>
+    <%- partial('post/title', {class_name: 'archive-article-title'}) %>
+  </div>
 </article>

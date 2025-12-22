@@ -1,1 +1,14 @@
-<%- partial('_partial/archive', {pagination: config.archive, index: true}) %>
+<%- partial('_partial/head') %>
+
+<body>
+    <%- partial('_partial/header-retrolog') %>
+
+    <div class="retrolog-container">
+        <%- partial('_partial/archive', {pagination: config.archive, index: true}) %>
+    </div>
+
+    <%- partial('_partial/footer-retrolog') %>
+
+</body>
+
+</html>

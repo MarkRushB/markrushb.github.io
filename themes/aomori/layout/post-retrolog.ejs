@@ -1,0 +1,39 @@
+<%- partial('_partial/head') %>
+
+<body>
+    <%- partial('_partial/header-retrolog') %>
+
+    <div class="retrolog-post-detail">
+        <a href="javascript:history.back()" class="post-back-btn">
+            <span class="back-arrow">←</span> 返回归档 / BACK
+        </a>
+        
+        <header class="post-header">
+            <div class="post-meta-line">
+                <span class="post-date"><%- date(page.date, 'YYYY-MM-DD') %></span>
+                <div class="meta-divider"></div>
+            </div>
+            <h1 class="post-title"><%= page.title %></h1>
+            <% if (page.tags && page.tags.length){ %>
+                <div class="post-tags">
+                    <% page.tags.forEach(function(tag){ %>
+                        <span class="tag-item">#<%= tag.name %></span>
+                    <% }); %>
+                </div>
+            <% } %>
+        </header>
+
+        <div class="post-content">
+            <%- page.content %>
+        </div>
+        
+        <% if (theme.aomori_comment && theme.aomori_comment.enable){ %>
+            <%- partial('_partial/post/comments') %>
+        <% } %>
+    </div>
+
+    <%- partial('_partial/footer-retrolog') %>
+
+</body>
+
+</html>

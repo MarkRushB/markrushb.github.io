@@ -1,15 +1,27 @@
-<div class="index">
-  <% page.posts.each(function(post){ %>
-    <% if (post.layout === 'tweet'){ %>
-      <%- partial('_partial/article-tweet', {post: post}) %>
-    <% } else { %>
-      <%- partial('_partial/article-index', {post: post, index: true}) %>
-    <% } %>
-  <% }) %>
+<div class="retrolog-container">
+  <div class="retrolog-timeline">
+    <% page.posts.each(function(post){ %>
+      <div class="timeline-item">
+        <div class="timeline-date-label">
+          <%- date(post.date, 'YYYY-MM-DD') %>
+        </div>
+        
+        <% if (post.layout === 'tweet'){ %>
+          <%- partial('_partial/article-tweet-retrolog', {post: post}) %>
+        <% } else { %>
+          <%- partial('_partial/article-index-retrolog', {post: post, index: true}) %>
+        <% } %>
+      </div>
+    <% }) %>
 
-  <% if (page.total > 1){ %>
-    <nav class="pagination">
-        <%- paginator() %>
-    </nav>
-  <% } %>
+    <% if (page.total > 1){ %>
+      <nav class="pagination" style="margin-top: 3rem; text-align: center; font-family: var(--retrolog-font-mono); font-size: 0.875rem;">
+        <%- paginator({
+          prev_text: '← 上一页 / PREV',
+          next_text: '下一页 / NEXT →',
+          mid_size: 2
+        }) %>
+      </nav>
+    <% } %>
+  </div>
 </div>

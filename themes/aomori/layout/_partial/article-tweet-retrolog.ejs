@@ -1,0 +1,29 @@
+<div class="retrolog-echo">
+    <div class="echo-inner">
+        <header class="echo-header">
+            <span class="echo-date">
+                <%- date(post.date, 'YYYY-MM-DD') %>
+            </span>
+        </header>
+
+        <div class="echo-content">
+            <blockquote>
+                <% if (post.excerpt){ %>
+                    <%- post.excerpt %>
+                <% } else { %>
+                    <%- post.content %>
+                <% } %>
+            </blockquote>
+        </div>
+
+        <footer class="echo-footer">
+            <% if (post.tags && post.tags.length){ %>
+                <% post.tags.forEach(function(tag){ %>
+                    <span class="echo-tag">#<%= tag.name %></span>
+                <% }); %>
+            <% } %>
+        </footer>
+
+        <div class="echo-bottom-line"></div>
+    </div>
+</div>

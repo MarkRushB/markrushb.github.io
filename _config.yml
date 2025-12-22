@@ -103,7 +103,7 @@ theme: aomori
 aomori_logo_typed_animated: true
 aomori_menu:
   Home: /
-  Archives: /archives
+  # Archives: /archives
 aomori_widgets:
   - toc # 文章导航
   - category  #文章分类
