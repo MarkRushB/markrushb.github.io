@@ -291,13 +291,13 @@ body {
       
       .read-more-btn {
         font-family: var(--retrolog-font-mono);
-        font-size: 0.75rem;
+        font-size: 0.625rem;
         text-transform: uppercase;
         font-weight: 700;
         letter-spacing: 0.15em;
         background-color: var(--retrolog-border);
         color: white;
-        padding: 0.5rem 1rem;
+        padding: 0.375rem 0.75rem;
         border: none;
         cursor: pointer;
         transition: background-color 0.2s ease;

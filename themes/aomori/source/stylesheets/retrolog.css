@@ -534,9 +534,9 @@ body {
 .retrolog-post-detail .post-back-btn .back-arrow {
   transition: transform 0.2s ease;
 }
-.retrolog-post-detail .post-header {
+/* .retrolog-post-detail .post-header {
   margin-bottom: 3rem;
-}
+} */
 .retrolog-post-detail .post-header .post-meta-line {
   display: flex;
   align-items: center;

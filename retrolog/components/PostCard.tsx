@@ -9,6 +9,16 @@ interface PostCardProps {
 }
 
 export const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
+  // 计算阅读时间
+  const calculateReadTime = (content: string): number => {
+    const wordCount = content.length;
+    // 中文阅读速度约400字/分钟
+    const readTime = Math.ceil(wordCount / 400);
+    return readTime < 1 ? 1 : readTime;
+  };
+  
+  const readTime = calculateReadTime(post.fullContent);
+  
   return (
     <article 
       className="bg-white p-8 md:p-12 retro-border retro-shadow mb-16 hover:-translate-x-1 hover:-translate-y-2 transition-all duration-300 cursor-pointer group relative overflow-hidden"
@@ -47,11 +57,11 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
       
       <div className="flex items-center justify-between pt-6 border-t border-stone-50">
         <div className="flex items-center gap-4">
-          <button className="font-mono text-xs uppercase font-bold tracking-widest bg-stone-800 text-white px-4 py-2 hover:bg-black transition-colors">
+          <button className="font-mono text-[10px] uppercase font-bold tracking-widest bg-stone-800 text-white px-3 py-1.5 hover:bg-black transition-colors">
             阅读全文 / READ
           </button>
           <span className="hidden sm:inline font-mono text-[10px] text-stone-300 uppercase tracking-widest">
-            Estimated 5 min read
+            约 {readTime} 分钟
           </span>
         </div>
         <div className="text-stone-200 group-hover:text-stone-800 transition-colors">

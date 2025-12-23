@@ -33,10 +33,19 @@
     <div class="chronicle-footer">
         <div class="footer-actions">
             <a href="<%- url_for(post.path) %>" class="read-more-btn">
-                阅读全文 / READ
+                阅读全文
             </a>
+            <% 
+                // 计算阅读时间：去除HTML标签，计算字数
+                var content = post.content || '';
+                var strippedContent = content.replace(/<[^>]+>/g, '');
+                var wordCount = strippedContent.length;
+                // 中文阅读速度约400字/分钟
+                var readTime = Math.ceil(wordCount / 400);
+                readTime = readTime < 1 ? 1 : readTime;
+            %>
             <span class="read-time">
-                Estimated 5 min read
+                这段废话会浪费你<%= readTime %>分钟
             </span>
         </div>
         <div class="footer-icon">
