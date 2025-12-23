@@ -44,62 +44,56 @@ import { addNewClass, removeClass, throttle } from './class-module'
             headingSelector: 'h1, h2, h3',
         })
 
+    // Cache DOM elements for performance
+    const docElement = document.documentElement
+    const body = document.body
+    const $backtop = $('#backtop')
+    const sidebar = document.querySelector('.sidebar')
+
     // NProgress
-    var totalH =
-        document.body.scrollHeight || document.documentElement.scrollHeight // 页面总高
-    var clientH = window.innerHeight || document.documentElement.clientHeight // 可视高
-    window.addEventListener(
-        'scroll',
-        throttle(() => {
-            // 计算有效高
-            var validH = totalH - clientH
-            // 滚动条卷去高度
-            var scrollH =
-                document.body.scrollTop || document.documentElement.scrollTop
-            // 百分比
-            var result = scrollH / validH
-            NProgress.set(result)
-        })
-    )
+    const totalH = body.scrollHeight || docElement.scrollHeight // 页面总高
+    const clientH = window.innerHeight || docElement.clientHeight // 可视高
+    const validH = totalH - clientH // 计算有效高
+
     NProgress.configure({
         showSpinner: false,
         minimum: 0,
     })
 
     // Back to Top
-    $('#backtop').click(function () {
+    $backtop.click(function () {
         $('html, body').animate({ scrollTop: 0 }, 800)
     })
 
-    // Share
+    // Share - Optimized hover handler
     $('.share > .share-item').hover(
         function () {
-            addNewClass(
-                $(this).children('.n-icon'),
-                $(this).children('.n-icon')[0].classList[1] + '-select'
-            )
+            const iconElement = $(this).children('.n-icon')[0]
+            if (iconElement && iconElement.classList.length > 1) {
+                iconElement.classList.add(iconElement.classList[1] + '-select')
+            }
         },
         function () {
-            removeClass(
-                $(this).children('.n-icon'),
-                $(this).children('.n-icon')[0].classList[2]
-            )
+            const iconElement = $(this).children('.n-icon')[0]
+            if (iconElement && iconElement.classList.length > 2) {
+                iconElement.classList.remove(iconElement.classList[2])
+            }
         }
     )
 
-    // Social
+    // Social - Optimized hover handler
     $('.footer-info > .social').hover(
         function () {
-            addNewClass(
-                $(this).children('.n-icon'),
-                $(this).children('.n-icon')[0].classList[1] + '-select'
-            )
+            const iconElement = $(this).children('.n-icon')[0]
+            if (iconElement && iconElement.classList.length > 1) {
+                iconElement.classList.add(iconElement.classList[1] + '-select')
+            }
         },
         function () {
-            removeClass(
-                $(this).children('.n-icon'),
-                $(this).children('.n-icon')[0].classList[2]
-            )
+            const iconElement = $(this).children('.n-icon')[0]
+            if (iconElement && iconElement.classList.length > 2) {
+                iconElement.classList.remove(iconElement.classList[2])
+            }
         }
     )
 
@@ -113,22 +107,28 @@ import { addNewClass, removeClass, throttle } from './class-module'
         removeClass($('body'), 'mobile-menu-fixed')
     })
 
-    // 监听屏幕滚动修改边栏
+    // Combined scroll event handler for better performance
     window.addEventListener(
         'scroll',
         throttle(() => {
-            const _top =
-                document.documentElement.scrollTop || document.body.scrollTop
-            if (_top > 100) {
+            // Get scroll position once
+            const scrollTop = body.scrollTop || docElement.scrollTop
+
+            // Update NProgress
+            const result = scrollTop / validH
+            NProgress.set(result)
+
+            // Handle sidebar and back-to-top button
+            if (scrollTop > 100) {
                 // 边栏绝对定位
-                addNewClass('.sidebar', 'sidebar-fixed')
+                sidebar && addNewClass(sidebar, 'sidebar-fixed')
                 // 返回顶部按钮显示
-                $('#backtop').fadeIn(300)
+                $backtop.fadeIn(300)
             } else {
                 // 取消边栏定位
-                removeClass('.sidebar', 'sidebar-fixed')
+                sidebar && removeClass(sidebar, 'sidebar-fixed')
                 // 返回顶部按钮消失
-                $('#backtop').fadeOut(300)
+                $backtop.fadeOut(300)
             }
         })
     )
