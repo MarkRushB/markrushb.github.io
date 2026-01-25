@@ -20,10 +20,6 @@ const { terser } = require('rollup-plugin-terser'); // Rollup plugin to minify g
 const eslint = require('gulp-eslint')
 const stylelint = require('@ronilaukkarinen/gulp-stylelint')
 
-// Other
-const yaml = require('js-yaml');
-const fs   = require('fs');
-
 /* -------------------------------------------------------- */
 
 // 清理旧文件
@@ -118,11 +114,6 @@ gulp.task('js', async function () {
     ])
         .pipe(concat('build.js'))
         .pipe(gulp.dest('source/dist'))
-
-    const doc = yaml.load(fs.readFileSync('_config.yml', 'utf8'));
-    doc.version = (new Date()).getTime()
-    const docUpdated = yaml.dump(doc);
-    fs.writeFileSync('_config.yml', docUpdated, 'utf8');
 })
 
 gulp.task('build-js', gulp.series('js'))

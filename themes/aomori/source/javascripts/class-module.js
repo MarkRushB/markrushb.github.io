@@ -1,4 +1,4 @@
-// Add class to element => https://www.sitepoint.com/add-remove-css-class-vanilla-js/
+// Add class to element - Optimized using classList API
 export function addNewClass(elements, myClass) {
     // if there are no elements, we're done
     if (!elements) {
@@ -12,19 +12,15 @@ export function addNewClass(elements, myClass) {
     else if (elements.tagName) {
         elements = [elements]
     }
-    // add class to all chosen elements
-    for (var i = 0; i < elements.length; i++) {
-        // if class is not already found
-        if (
-            (' ' + elements[i].className + ' ').indexOf(' ' + myClass + ' ') < 0
-        ) {
-            // add class
-            elements[i].className += ' ' + myClass
+    // add class to all chosen elements using modern classList API
+    for (let i = 0; i < elements.length; i++) {
+        if (elements[i] && elements[i].classList) {
+            elements[i].classList.add(myClass)
         }
     }
 }
 
-// Remove class from element => https://www.sitepoint.com/add-remove-css-class-vanilla-js/
+// Remove class from element - Optimized using classList API
 export function removeClass(elements, myClass) {
     // if there are no elements, we're done
     if (!elements) {
@@ -39,11 +35,11 @@ export function removeClass(elements, myClass) {
     else if (elements.tagName) {
         elements = [elements]
     }
-    // create pattern to find class name
-    var reg = new RegExp('(^| )' + myClass + '($| )', 'g')
-    // remove class from all chosen elements
-    for (var i = 0; i < elements.length; i++) {
-        elements[i].className = elements[i].className.replace(reg, ' ')
+    // remove class from all chosen elements using modern classList API
+    for (let i = 0; i < elements.length; i++) {
+        if (elements[i] && elements[i].classList) {
+            elements[i].classList.remove(myClass)
+        }
     }
 }
 
