@@ -1,4 +1,4 @@
-name: Build and Deploy Hexo
+name: Build and Deploy Hugo
 
 on:
   push:
@@ -9,36 +9,21 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           submodules: recursive
-          
-      - name: 拉取最新代码
-        run: |
-          echo "拉取远程最新代码"
-          git fetch origin
-          git reset --hard origin/main
 
-      - name: Use Node.js 20
-        uses: actions/setup-node@v4
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
         with:
-          node-version: "20"
-
-      - name: Cache NPM dependencies
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.OS }}-npm-cache
-          restore-keys: |
-            ${{ runner.OS }}-npm-cache
-
-      - name: Install Dependencies
-        run: npm install
+          hugo-version: "0.160.0"
+          extended: true
 
       - name: Build
-        run: npm run build
+        run: hugo --minify --panicOnWarning
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
