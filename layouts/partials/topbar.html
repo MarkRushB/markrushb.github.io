@@ -1,0 +1,10 @@
+<header class="journal-topbar">
+  <div class="journal-topbar__inner">
+    <a class="journal-topbar__brand" href="{{ "/" | relURL }}">{{ .Site.Title }}</a>
+    <nav class="journal-topbar__nav" aria-label="{{ i18n "primaryNavigation" }}">
+      {{ range .Site.Menus.main }}
+        <a href="{{ .URL | relLangURL }}"{{ if $.IsMenuCurrent "main" . }} aria-current="page"{{ end }}>{{ .Name }}</a>
+      {{ end }}
+    </nav>
+  </div>
+</header>

@@ -10,10 +10,9 @@ pagination:
   pagerSize: 10
 permalinks:
   articles: /:year/:month/:day/:slug/
-taxonomies:
-  tag: tags
+disableKinds: [taxonomy, term]
 outputs:
-  home: [HTML, RSS, JSON]
+  home: [HTML, RSS]
 markup:
   goldmark:
     renderer:
@@ -24,9 +23,10 @@ markup:
 params:
   author: Zsc
   authorInitials: Z
+  role: 写作者 / 工程师
   tagline: 感谢电，网络，计算机。
   description: 感谢电，网络，计算机。
-  homeEyebrow: 随笔 · 生活 · 技术
+  homeEyebrow: ""
   homeTitle: Bullshit Practice
   homeIntro: 感谢电，网络，计算机。
   aboutIntro: 在这里记录生活、故乡、旅行，以及偶尔出现的技术。
@@ -35,8 +35,8 @@ params:
   authorPage: /about/
   showToc: true
   showTopics: true
-  showAbout: true
-  showNewsletter: true
+  showAbout: false
+  showNewsletter: false
   newsletterURL: ""
   minTagPostsToIndex: 1
   themeColor: "#FAFAF7"
@@ -44,8 +44,6 @@ params:
 menu:
   main:
     - {name: 归档, url: /archives/, weight: 10}
-    - {name: 搜索, url: /search/, weight: 20}
-    - {name: 标签, url: /tags/, weight: 30}
     - {name: 关于, url: /about/, weight: 40}
 
 related:

@@ -1,0 +1,30 @@
+{{ define "main" }}
+  {{ $mainSection := .Site.Params.mainSection | default "articles" }}
+  {{ $articles := (where .Site.RegularPages "Section" $mainSection).ByDate.Reverse }}
+  <section class="journal-index" aria-label="文章列表">
+    <header class="journal-index__intro">
+      <h1>{{ .Site.Params.homeTitle }}</h1>
+    </header>
+    <div class="journal-feed">
+      {{ range first 10 $articles }}
+        {{ $isNote := eq .Params.layout "tweet" }}
+        <article class="journal-entry{{ if $isNote }} journal-entry--note{{ end }}">
+          <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "02 Jan 2006" }}</time>
+          {{ if $isNote }}
+          <div class="journal-entry__link journal-entry__note-wrap">
+            <div class="journal-entry__note">{{ .Content }}</div>
+          </div>
+          {{ else }}
+          <a class="journal-entry__link" href="{{ .RelPermalink }}">
+            <h2>{{ .Title }}</h2>
+            <div class="journal-entry__meta"><span>约 {{ .ReadingTime }} 分钟阅读</span></div>
+            <p>{{ .Params.description | default .Params.summary | default .Summary | plainify | truncate 155 }}</p>
+          </a>
+          {{ end }}
+        </article>
+      {{ else }}
+        <div class="empty-state">{{ i18n "noArticles" }}</div>
+      {{ end }}
+    </div>
+  </section>
+{{ end }}

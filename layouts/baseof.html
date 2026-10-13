@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Locale | default .Site.Language.Lang }}">
+<head>
+  {{ partial "head.html" . }}
+</head>
+<body class="{{ if .IsHome }}is-home{{ else }}is-inner{{ end }}">
+  <a class="skip-link" href="#main-content">{{ i18n "skipToContent" }}</a>
+  <div class="journal-shell">
+    {{ partial "topbar.html" . }}
+    <main id="main-content" class="journal-main">
+      {{ block "main" . }}{{ end }}
+      {{ partial "footer.html" . }}
+    </main>
+  </div>
+  {{ partial "scripts.html" . }}
+</body>
+</html>
